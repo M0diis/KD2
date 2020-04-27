@@ -1,0 +1,4 @@
+Tesla; CyberTruck; 50000
+Audi; A6 ; 45000
+Peugot; 406; 15000
+Lada; 1986; 1000000
