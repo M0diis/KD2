@@ -1,0 +1,4 @@
+﻿Komandos Pavadinimas_1; 10; 5;
+Komandos Pavadinimas_2; 5; 5;
+Komandos Pavadinimas_3; 9; 3;
+Komandos Pavadinimas_4; 7; 2;

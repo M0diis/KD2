@@ -1,6 +1,0 @@
-﻿Komandos Pav_1; Pavarde_1 Vardas_1; 2000; 200; Centras; 4; 20
-Komandos Pav_1; Pavarde_2 Vardas_2; 2001; 200; Gynejas; 9; 17
-Komandos Pav_1; Pavarde_3 Vardas_3; 1999; 200; Puolejas; 4; 16
-Komandos Pav_2; Pavarde_4 Vardas_4; 1998; 200; Centras; 2; 18
-Komandos Pav_2; Pavarde_5 Vardas_5; 2002; 200; Puolejas; 5; 5
-Komandos Pav_2; Pavarde_6 Vardas_6; 2003; 200; Gynejas; 5; 4
