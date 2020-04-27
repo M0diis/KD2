@@ -1,0 +1,8 @@
+C:\Users\dvmoy\Desktop\PV-K2\PV-K2\K2Example\bin\Debug\Duomenys.txt
+C:\Users\dvmoy\Desktop\PV-K2\PV-K2\K2Example\bin\Debug\PVZ.exe.config
+C:\Users\dvmoy\Desktop\PV-K2\PV-K2\K2Example\bin\Debug\PVZ.exe
+C:\Users\dvmoy\Desktop\PV-K2\PV-K2\K2Example\bin\Debug\PVZ.pdb
+C:\Users\dvmoy\Desktop\PV-K2\PV-K2\K2Example\obj\Debug\K2Example.csprojAssemblyReference.cache
+C:\Users\dvmoy\Desktop\PV-K2\PV-K2\K2Example\obj\Debug\K2Example.csproj.CoreCompileInputs.cache
+C:\Users\dvmoy\Desktop\PV-K2\PV-K2\K2Example\obj\Debug\PVZ.exe
+C:\Users\dvmoy\Desktop\PV-K2\PV-K2\K2Example\obj\Debug\PVZ.pdb

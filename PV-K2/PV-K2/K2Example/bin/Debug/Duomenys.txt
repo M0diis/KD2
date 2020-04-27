@@ -1,0 +1,6 @@
+﻿Pirmas; Modelis Pirmas; 10.15  
+Antras; Modelis Antras; 5.15 
+Pirmas; Modelis Trečias; 8.89 
+Pirmas; Modelis Ketvirtas; 7.47
+Trečias; Modelis Penktas; 4.99 
+Pirmas; Modelis Šeštas; 2.55 
