@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 
-// IF9-1 Modestas Kazlauskas P175B123
-
 namespace K2Basketball
 {
     public interface IParsable
