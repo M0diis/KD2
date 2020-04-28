@@ -1,11 +1,7 @@
-//Rascius Kipras IF/9-1
-//K2-4
-//P175B123
-
 using System;
 using System.IO;
 
-namespace K2Production
+namespace K2Factory
 {
     public interface IBeneath<T>
     {
