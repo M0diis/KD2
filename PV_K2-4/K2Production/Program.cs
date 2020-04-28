@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace K2Factory
+namespace K2Production
 {
     public interface IBeneath<T>
     {
