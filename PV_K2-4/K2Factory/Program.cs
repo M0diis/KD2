@@ -1,119 +1,87 @@
+//Rascius Kipras IF/9-1
+//K2-4
+//P175B123
+
 using System;
 using System.IO;
 
-namespace K2Basketball
+namespace K2Production
 {
-    public interface IParsable
+    public interface IBeneath<T>
     {
         /// <summary>
-        /// Initializes properties of the current instance with the data, extracted from
-        /// string type parameter.
+        /// Indicates whether the value of the certain property of the current instance is
+        /// less than certain value passed by parameter.
         /// </summary>
-        /// <param name="data">The data passed as string</param>
-        void ParseFromString(string data);
+        /// <param name="data">The value to compare against.</param>
+        /// <returns>true if current instance is less than data; otherwise, 
+        /// false</returns>
+        bool LessThan(T data);
+        /// <summary>
+        /// Indicates whether the value of the certain property of the current instance is
+        /// less than or equal to certain value passed by parameter.
+        /// </summary>
+        /// <param name="data">The value to compare against.</param>
+        /// <returns>true if current instance is less than or equal to data;
+        /// otherwise, false</returns>
+        bool LessThanOrEqual(T data);
     }
 
     /// <summary>
-    /// Provides properties and interface implementations for the storing of a team data and
-    /// manipulating them.
+    /// Provides properties and interface implementations for the storing of an operation data
+    /// and manipulating them.
     /// THE STUDENT SHOULD DEFINE THE CLASS ACCORDING THE TASK.
     /// </summary>
-    public class Team : IParsable, IComparable<Team>
+    public class Operation : IComparable<Operation>, IBeneath<int>, IBeneath<string>
     {
-        public string TeamName { get; set; }
-        public int GamesPlayed { get; set; }
-        public int GamesWon { get; set; }
+        public int Day { get; set; }
+        public string FullName { get; set; }
+        public string Code { get; set; }
+        public int Amount { get; set; }
+        public decimal Cost { get; set; }
 
-        public Team(string teamname, int played, int won)
+
+        public Operation (int day, string fullName, string code, int amount, decimal cost)
         {
-            this.TeamName = teamname;
-            this.GamesPlayed = played;
-            this.GamesWon = won;
+            this.Day = day;
+            this.FullName = fullName;
+            this.Code = code;
+            this.Amount = amount;
+            this.Cost = cost;
         }
 
-        public Team()
+        public int CompareTo(Operation other)
         {
-
-        }
-
-        public int CompareTo(Team other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ParseFromString(string data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string ToString()
-        {
-            return string.Format("| {0,-30} | {1,-25} | {2,15} |", TeamName, GamesPlayed, GamesWon);
-        }
-    }
-
-    /// <summary>
-    /// Provides properties and interface implementations for the storing of a player data and
-    /// manipulating them.
-    /// THE STUDENT SHOULD DEFINE THE CLASS ACCORDING THE TASK.
-    /// </summary>
-    public class Player : IComparable<Player>, IEquatable<int>, IEquatable<string>, IParsable
-    {
-        public string TeamName { get; set; }
-        public string SurnameName { get; set; }
-        public int BirthYear { get; set; }
-        public int Height { get; set; }
-        public string Position { get; set; }
-        public int GamesPlayed { get; set; }
-        public int PointsScored { get; set; }
-
-        public Player(string team, string surnamename, int year, int height, string position, int gamesplayed, int points)
-        {
-            this.TeamName = team;
-            this.SurnameName = surnamename;
-            this.BirthYear = year;
-            this.Height = height;
-            this.Position = position;
-            this.GamesPlayed = gamesplayed;
-            this.PointsScored = points;
-        }
-
-        public Player()
-        {
-
-        }
-
-        public int CompareTo(Player other)
-        {
-            if (other == null) return 1;
-
-            if (this.PointsScored == other.PointsScored)
+            if (this.FullName.CompareTo(other.FullName) != 0)
             {
-                return this.GamesPlayed.CompareTo(other.GamesPlayed);
+                return this.FullName.CompareTo(other.FullName);
             }
-
-            return other.PointsScored.CompareTo(this.PointsScored);
+            else
+            {
+                return this.Amount.CompareTo(other.Amount) * -1;
+            }
         }
 
-        public void ParseFromString(string data)
+        public bool LessThan(int data)
         {
-            throw new NotImplementedException();
+            return this.Amount < data;
         }
 
-        public bool Equals(int other)
+        public bool LessThanOrEqual(int data)
         {
-            return GamesPlayed.Equals(other);
+            return this.Amount <= data;
         }
 
-        public bool Equals(string other)
+        public bool LessThan(string data)
         {
-            return Position.Trim().Equals(other.Trim());
+            return this.Code.CompareTo(data) < 0;
         }
 
-        public override string ToString()
+        public bool LessThanOrEqual(string data)
         {
-            return string.Format("| {0,-30} | {1,-25} | {2,15} | {3,10} | {4,-20} | {5,15} | {6,15} |", TeamName, SurnameName, BirthYear, Height, Position, GamesPlayed, PointsScored);
+            return this.Code.CompareTo(data) < 1;
         }
+
     }
 
     /// <summary>
@@ -123,7 +91,7 @@ namespace K2Basketball
     /// </summary>
     /// <typeparam name="T">The type of the data to be stored in the list. Data 
     /// class should implement some interfaces.</typeparam>
-    public class LinkList<T> where T : IComparable<T>
+    public class LinkList<T> where T :IComparable<T>
     {
         class Node
         {
@@ -141,6 +109,10 @@ namespace K2Basketball
         /// </summary>
         private Node begin;
         /// <summary>
+        /// All the time should point to the last element of the list.
+        /// </summary>
+        private Node end;
+        /// <summary>
         /// Shouldn't be used in any other methods except Begin(), Next(), Exist() and Get().
         /// </summary>
         private Node current;
@@ -150,7 +122,7 @@ namespace K2Basketball
         /// </summary>
         public LinkList()
         {
-            begin = current = null;
+            begin = current = end = null;
         }
         /// <summary>
         /// One of four interface methods devoted to loop through a list and get value stored in it.
@@ -187,9 +159,39 @@ namespace K2Basketball
         {
             return current.Data;
         }
+        /// <summary>
+        /// Removes the element that is pointed by the internal pointer and advances the internal
+        /// pointer to the next element. The method should be used in a combination with the methods
+        /// Begin(), Next(), Exist().
+        /// If the last element of the list is removed, the internal pointer is assigned null.
+        /// </summary>
+        public void RemoveCurrent()
+        {
+            if (current is null)
+                return;
+            if (current == begin)
+            {
+                begin = begin.Next;
+                if (begin is null)
+                    end = null;
+                current.Next = null;
+                current = begin;
+            }
+            else
+            {
+                Node prev = begin;
+                while (prev.Next != current)
+                    prev = prev.Next;
+                prev.Next = current.Next;
+                if (current == end)
+                    end = prev;
+                current.Next = null;
+                current = prev.Next;
+            }
+        }
 
         /// <summary>
-        /// Method appends new node to the beginning of the list and saves in it <paramref name="data"/>
+        /// Method appends new node to the end of the list and saves in it <paramref name="data"/>
         /// passed by the parameter.
         /// THE STUDENT SHOULD IMPLEMENT THIS METHOD ACCORDING THE TASK.
         /// </summary>
@@ -199,625 +201,122 @@ namespace K2Basketball
             if (begin == null)
             {
                 begin = new Node(data, null);
+
+                end = begin;
             }
             else
             {
                 Node temp = new Node(data, null);
 
-                temp.Next = begin;
+                end.Next = temp;
+                end = temp;
 
-                begin = temp;
             }
         }
 
         /// <summary>
-        /// Method sorts data in the list. The data object class should implement IComparable&lt;T&gt;
+        /// Method sorts data in the list. The data object class should implement IComparable
         /// interface though defining sort order.
         /// THE STUDENT SHOULD IMPLEMENT THIS METHOD ACCORDING THE TASK.
         /// </summary>
         public void Sort()
-        {
-            for (Node d1 = begin; d1 != null; d1 = d1.Next)
-            {
-                Node minv = d1;
-
-                for (Node d2 = d1.Next; d1 != null; d2 = d2.Next)
-                {
-                    if (d2.Data.CompareTo(minv.Data) < 0) minv = d2;
-                }
-
-                T temp = d1.Data;
-                d1.Data = minv.Data;
-                minv.Data = temp;
-            }
-        }
-    }
-
-    public static class InOut 
-    {
-        /// <summary>
-        /// Creates the list containing data read from the text file.
-        /// THE STUDENT SHOULD IMPLEMENT THIS GENERIC METHOD ACCORDING THE TASK.
-        /// THE STUDENT SHOULDN'T CHANGE THE SIGNATURE OF THE METHOD!
-        /// </summary>
-        /// <typeparam name="T">The type of the data objects in the returning list.</typeparam>
-        /// <param name="fileName">The name of the text file</param>
-        /// <returns>List with data from file</returns>
-        public static LinkList<T> ReadFromFile<T>(string fileName) where T : IComparable<T>, IParsable, new()
-        {
-            StreamReader reader = new StreamReader(fileName);
-
-            LinkList<T> list = new LinkList<T>();
-
-            string text = reader.ReadToEnd();
-
-            string[] lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var line in lines)
-            {
-                string[] data = line.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-
-                if(data.Length > 3)
-                {
-                    Player player = new Player(data[0], data[1], int.Parse(data[2]), int.Parse(data[3]), data[4], int.Parse(data[5]), int.Parse(data[6]));
-
-                    T temp = (T)(object)player;
-
-                    list.Add(temp);
-                }
-                else
-                {
-                    Team team = new Team(data[0], int.Parse(data[1]), int.Parse(data[2]));
-
-                    T temp = (T)(object)team;
-
-                    list.Add(temp);
-                }
-
-            }
-
-            return list;
-        }
-
-
-        /// <summary>
-        /// Appends CSV formatted rows from the data contained in the <paramref name="list"/>
-        /// to the end of the text file.
-        /// THE STUDENT SHOULD IMPLEMENT THIS GENERIC METHOD ACCORDING THE TASK.
-        /// THE STUDENT SHOULD APPEND CONSTRAINTS ON TYPE PARAMETER <typeparamref name="T"/>
-        /// IF THE IMPLEMENTATION REQUIRES IT.
-        /// </summary>
-        /// <typeparam name="T">The type of the data objects stored in the list</typeparam>
-        /// <param name="fileName">The name of the text file</param>
-        /// <param name="list">The list of the data to be stored in the file.</param>
-        public static void PrintToFile<T>(string fileName, LinkList<T> list) where T : IComparable<T>
-        {
-            if (!File.Exists(fileName)) File.Create(fileName).Close();
-
-
-            using (var writer = new StreamWriter(fileName, true)) // True means Append text to file
-            {
-                list.Begin();
-                if (list.Exist())
-                {   
-
-                    T temp = list.Get();
-
-                    if (temp is Player)
-                    {
-                        writer.WriteLine(new string('-', 152));
-                        writer.WriteLine(string.Format("| {0,-30} | {1,-25} | {2,15} | {3,-10} | {4,-20} | {5,15} | {6,15} |", "Komanda", "Zaidejas", "Gimimo Metai", "Ugis", "Pozicija", "Suzaista", "Imesti Taskai"));
-                        writer.WriteLine(new string('-', 152));
-                    }
-                    else if (temp is Team)
-                    {
-                        writer.WriteLine(new string('-', 80));
-                        writer.WriteLine(string.Format("| {0,-30} | {1,-25} | {2,15} |", "Komanda", "Suzaista", "Laimeta"));
-                        writer.WriteLine(new string('-', 80));
-                    }
-
-                    for (list.Begin(); list.Exist(); list.Next())
-                    {
-                        temp = list.Get();
-
-                        writer.WriteLine(temp.ToString());
-
-                    }
-
-                    if (temp is Player)
-                    {
-                        writer.WriteLine(new string('-', 152));
-                    }
-                    else if (temp is Team)
-                    {
-                        writer.WriteLine(new string('-', 80));
-                    }
-                    writer.WriteLine("");
-                }
-            }
-        }
-    }
-
-    public static class Task
-    {
-        /// <summary>
-        /// The method finds the largest count of victories in the given list.
-        /// THE STUDENT SHOULD IMPLEMENT THIS METHOD ACCORDING THE TASK.
-        /// </summary>
-        /// <param name="list">The data list to be searched.</param>
-        /// <returns>The highest number of victories.</returns>
-        public static int MaxVictories(LinkList<Team> list)
-        {
-            int maxVictories = 0;
-
-            for(list.Begin(); list.Exist(); list.Next())
-            {
-                Team team = list.Get();
-
-                if (team.GamesWon > maxVictories) maxVictories = team.GamesWon;
-            }
-
-            return maxVictories;
-        }
-
-        /// <summary>
-        /// Filters data from the source list that meets filtering criterion and writes them
-        /// into the new list.
-        /// THE STUDENT SHOULD IMPLEMENT THIS GENERIC METHOD ACCORDING THE TASK.
-        /// THE STUDENT SHOULDN'T CHANGE THE SIGNATURE OF THE METHOD!
-        /// </summary>
-        /// <typeparam name="TData">The type of the data objects stored in the list</typeparam>
-        /// <typeparam name="TCriterion">The type of criteria</typeparam>
-        /// <param name="source">The source list from which the result would be created</param>
-        /// <param name="criterion">Criterion that the object from source list should meet in 
-        /// order to fall in result list</param>
-        /// <returns>The list that contains filtered data</returns>
-        public static LinkList<TData> Filter<TData, TCriterion>(LinkList<TData> source, TCriterion criterion) where TData : IComparable<TData>, IEquatable<TCriterion>
-        {
-            LinkList<TData> list = new LinkList<TData>();
-
-            for (source.Begin(); source.Exist(); source.Next())
-            {
-                TData temp = source.Get();
-
-                if(temp is Player)
-                {
-                    Player player = (Player)(object)temp;
-
-
-                    if(criterion is string)
-                    {
-                        string criteria = (string)(object)criterion.ToString().Trim();
-
-                        if (player.Equals(criteria))
-                        {
-
-                            list.Add(temp);
-                        }
-                    }
-
-                    if (criterion is int)
-                    {
-                        int criteria = (int)(object)criterion;
-
-                        if (player.Equals(criteria))
-                        {
-                            list.Add(temp);
-                        }
-                    }
-
-                }
-            }
-
-            return list;
-        }
-    }
-
-    class Program
-    {
-        /// <summary>
-        /// THE STUDENT SHOULD IMPLEMENT THIS METHOD ACCORDING THE TASK.
-        /// </summary>
-        static void Main()
-        {
-            //
-            // Define File Paths
-            //
-            const string PlayerDataFile = "Zaidejai.txt";
-            const string TeamDataFile = "Komandos.txt";
-            const string Results = "Rezultatai.txt";
-
-            //
-            // Accept Input
-            //
-            Console.WriteLine("Enter First Position to filter by: ");
-            string firstPosition = Console.ReadLine();
-            Console.WriteLine("Enter Second Position to filter by: ");
-            string secondPosition = Console.ReadLine();
-
-            //
-            // Delete Result File if it exists
-            //
-            if (File.Exists(Results)) File.Delete(Results);
-
-            //
-            // Player Initial Data (I)
-            //
-            LinkList<Player> players = InOut.ReadFromFile<Player>(PlayerDataFile);
-
-            //
-            // Team Initial Data (II)
-            //
-            LinkList<Team> teams = InOut.ReadFromFile<Team>(TeamDataFile);
-
-            // Find Max Team Victories
-            int maxWins = Task.MaxVictories(teams);
-
-            //
-            // Filtered by First Position (III)
-            //
-            LinkList<Player> filteredByFirstPosition = Task.Filter<Player, string>(players, firstPosition);
-            // Sorting
-            //filteredByFirstPosition.Sort();
-
-            //
-            // Filtered by Second Position (IV)
-            //
-            LinkList<Player> filteredBySecondPosition = Task.Filter<Player, string>(players, secondPosition);
-            // Sorting
-            //filteredBySecondPosition.Sort();
-
-            //
-            // Players that played same amount games as there max victories (V)
-            //
-            LinkList<Player> filteredByMaxVictory = Task.Filter<Player, int>(players, maxWins);
-
-
-            //
-            // Printing to Rezultatai.CSV
-            //
-
-            // Print Player Initial Data to Rezultatai.CSV
-            InOut.PrintToFile<Player>(Results, players);
-
-            // Print Team Initial Data to Rezultatai.CSV
-            InOut.PrintToFile<Team>(Results, teams);using System;
-using System.IO;
-
-// IF9-1 Modestas Kazlauskas P175B123
-
-namespace K2Basketball
-{
-    public interface IParsable
-    {
-        /// <summary>
-        /// Initializes properties of the current instance with the data, extracted from
-        /// string type parameter.
-        /// </summary>
-        /// <param name="data">The data passed as string</param>
-        void ParseFromString(string data);
-    }
-
-    /// <summary>
-    /// Provides properties and interface implementations for the storing of a team data and
-    /// manipulating them.
-    /// THE STUDENT SHOULD DEFINE THE CLASS ACCORDING THE TASK.
-    /// </summary>
-    public class Team : IParsable, IComparable<Team>
-    {
-        public string TeamName { get; set; }
-        public int GamesPlayed { get; set; }
-        public int GamesWon { get; set; }
-
-        public Team(string teamname, int played, int won)
-        {
-            this.TeamName = teamname;
-            this.GamesPlayed = played;
-            this.GamesWon = won;
-        }
-
-        public Team()
-        {
-
-        }
-
-        public int CompareTo(Team other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ParseFromString(string data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string ToString()
-        {
-            return string.Format("| {0,-30} | {1,-25} | {2,15} |", TeamName, GamesPlayed, GamesWon);
-        }
-    }
-
-    /// <summary>
-    /// Provides properties and interface implementations for the storing of a player data and
-    /// manipulating them.
-    /// THE STUDENT SHOULD DEFINE THE CLASS ACCORDING THE TASK.
-    /// </summary>
-    public class Player : IComparable<Player>, IEquatable<int>, IEquatable<string>, IParsable
-    {
-        public string TeamName { get; set; }
-        public string SurnameName { get; set; }
-        public int BirthYear { get; set; }
-        public int Height { get; set; }
-        public string Position { get; set; }
-        public int GamesPlayed { get; set; }
-        public int PointsScored { get; set; }
-
-        public Player(string team, string surnamename, int year, int height, string position, int gamesplayed, int points)
-        {
-            this.TeamName = team;
-            this.SurnameName = surnamename;
-            this.BirthYear = year;
-            this.Height = height;
-            this.Position = position;
-            this.GamesPlayed = gamesplayed;
-            this.PointsScored = points;
-        }
-
-        public Player()
-        {
-
-        }
-
-        public int CompareTo(Player other)
-        {
-            if (other == null) return 1;
-
-            if (this.PointsScored == other.PointsScored)
-            {
-                return this.GamesPlayed.CompareTo(other.GamesPlayed);
-            }
-
-            return other.PointsScored.CompareTo(this.PointsScored);
-        }
-
-        public void ParseFromString(string data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Equals(int other)
-        {
-            return GamesPlayed.Equals(other);
-        }
-
-        public bool Equals(string other)
-        {
-            return Position.Trim().Equals(other.Trim());
-        }
-
-        public override string ToString()
-        {
-            return string.Format("| {0,-30} | {1,-25} | {2,15} | {3,10} | {4,-20} | {5,15} | {6,15} |", TeamName, SurnameName, BirthYear, Height, Position, GamesPlayed, PointsScored);
-        }
-    }
-
-    /// <summary>
-    /// Provides generic container where the data are stored in the linked list.
-    /// THE STUDENT SHOULD APPEND CONSTRAINTS ON TYPE PARAMETER <typeparamref name="T"/>
-    /// IF THE IMPLEMENTATION OF ANY METHOD REQUIRES IT.
-    /// </summary>
-    /// <typeparam name="T">The type of the data to be stored in the list. Data 
-    /// class should implement some interfaces.</typeparam>
-    public class LinkList<T> where T : IComparable<T>
-    {
-        class Node
-        {
-            public T Data { get; set; }
-            public Node Next { get; set; }
-            public Node(T data, Node next)
-            {
-                Data = data;
-                Next = next;
-            }
-        }
-
-        /// <summary>
-        /// All the time should point to the first element of the list.
-        /// </summary>
-        private Node begin;
-        /// <summary>
-        /// Shouldn't be used in any other methods except Begin(), Next(), Exist() and Get().
-        /// </summary>
-        private Node current;
-
-        /// <summary>
-        /// Initializes a new instance of the LinkList class with empty list.
-        /// </summary>
-        public LinkList()
-        {
-            begin = current = null;
-        }
-        /// <summary>
-        /// One of four interface methods devoted to loop through a list and get value stored in it.
-        /// Method should be used to move internal pointer to the first element of the list.
-        /// </summary>
-        public void Begin()
-        {
-            current = begin;
-        }
-        /// <summary>
-        /// One of four interface methods devoted to loop through a list and get value stored in it.
-        /// Method should be used to move internal pointer to the next element of the list.
-        /// </summary>
-        public void Next()
-        {
-            current = current.Next;
-        }
-        /// <summary>
-        /// One of four interface methods devoted to loop through a list and get value stored in it.
-        /// Method should be used to check whether the internal pointer points to the element of the list.
-        /// </summary>
-        /// <returns>true, if the internal pointer points to some element of the list; otherwise,
-        /// false.</returns>
-        public bool Exist()
-        {
-            return current != null;
-        }
-        /// <summary>
-        /// One of four interface methods devoted to loop through a list and get value stored in it.
-        /// Method should be used to get the value stored in the node pointed by the internal pointer.
-        /// </summary>
-        /// <returns>the value of the element that is pointed by the internal pointer.</returns>
-        public T Get()
-        {
-            return current.Data;
-        }
-
-        /// <summary>
-        /// Method appends new node to the beginning of the list and saves in it <paramref name="data"/>
-        /// passed by the parameter.
-        /// THE STUDENT SHOULD IMPLEMENT THIS METHOD ACCORDING THE TASK.
-        /// </summary>
-        /// <param name="data">The data to be stored in the list.</param>
-        public void Add(T data)
         {
             if (begin == null)
             {
-                begin = new Node(data, null);
+                return;
             }
-            else
+
+            bool done = true;
+
+            while (done)
             {
-                Node temp = new Node(data, null);
+                done = false;
 
-                temp.Next = begin;
-
-                begin = temp;
-            }
-        }
-
-        /// <summary>
-        /// Method sorts data in the list. The data object class should implement IComparable&lt;T&gt;
-        /// interface though defining sort order.
-        /// THE STUDENT SHOULD IMPLEMENT THIS METHOD ACCORDING THE TASK.
-        /// </summary>
-        public void Sort()
-        {
-            for (Node d1 = begin; d1 != null; d1 = d1.Next)
-            {
-                Node minv = d1;
-
-                for (Node d2 = d1.Next; d1 != null; d2 = d2.Next)
+                for (Node d = begin; d != null && d.Next != null; d = d.Next)
                 {
-                    if (d2.Data.CompareTo(minv.Data) < 0) minv = d2;
-                }
+                    if (d.Data.CompareTo(d.Next.Data) > 0)
+                    {
+                        T temp = d.Data;
 
-                T temp = d1.Data;
-                d1.Data = minv.Data;
-                minv.Data = temp;
+                        d.Data = d.Next.Data;
+
+                        d.Next.Data = temp;
+
+                        done = true;
+                    }
+                }
             }
         }
+    
+
     }
 
-    public static class InOut 
+    public static class InOut
     {
         /// <summary>
         /// Creates the list containing data read from the text file.
-        /// THE STUDENT SHOULD IMPLEMENT THIS GENERIC METHOD ACCORDING THE TASK.
-        /// THE STUDENT SHOULDN'T CHANGE THE SIGNATURE OF THE METHOD!
+        /// THE STUDENT SHOULD IMPLEMENT THIS METHOD ACCORDING THE TASK.
         /// </summary>
-        /// <typeparam name="T">The type of the data objects in the returning list.</typeparam>
         /// <param name="fileName">The name of the text file</param>
         /// <returns>List with data from file</returns>
-        public static LinkList<T> ReadFromFile<T>(string fileName) where T : IComparable<T>, IParsable, new()
+        public static LinkList<Operation> ReadFromFile(string fileName)
         {
             StreamReader reader = new StreamReader(fileName);
-
-            LinkList<T> list = new LinkList<T>();
+            LinkList<Operation> operations = new LinkList<Operation>();
 
             string text = reader.ReadToEnd();
-
             string[] lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var line in lines)
             {
-                string[] data = line.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-
-                if(data.Length > 3)
+                string[] data = line.Split(new string[] { "; " }, StringSplitOptions.RemoveEmptyEntries);
+                if (data.Length == 5)
                 {
-                    Player player = new Player(data[0], data[1], int.Parse(data[2]), int.Parse(data[3]), data[4], int.Parse(data[5]), int.Parse(data[6]));
 
-                    T temp = (T)(object)player;
+                    Operation Operation = new Operation(int.Parse(data[0]), data[1], data[2], int.Parse(data[3]), decimal.Parse(data[4]));
 
-                    list.Add(temp);
+                    operations.Add(Operation);
                 }
-                else
-                {
-                    Team team = new Team(data[0], int.Parse(data[1]), int.Parse(data[2]));
-
-                    T temp = (T)(object)team;
-
-                    list.Add(temp);
-                }
-
             }
 
-            return list;
+            return operations;
         }
 
-
         /// <summary>
-        /// Appends CSV formatted rows from the data contained in the <paramref name="list"/>
+        /// Appends the table, built from data contained in the list and preceded by the header,
         /// to the end of the text file.
-        /// THE STUDENT SHOULD IMPLEMENT THIS GENERIC METHOD ACCORDING THE TASK.
-        /// THE STUDENT SHOULD APPEND CONSTRAINTS ON TYPE PARAMETER <typeparamref name="T"/>
-        /// IF THE IMPLEMENTATION REQUIRES IT.
+        /// THE STUDENT SHOULD IMPLEMENT THIS METHOD ACCORDING THE TASK.
         /// </summary>
-        /// <typeparam name="T">The type of the data objects stored in the list</typeparam>
         /// <param name="fileName">The name of the text file</param>
-        /// <param name="list">The list of the data to be stored in the file.</param>
-        public static void PrintToFile<T>(string fileName, LinkList<T> list) where T : IComparable<T>
+        /// <param name="header">The header of the table</param>
+        /// <param name="list">The list from which the table to be formed</param>
+        public static void PrintToFile(string fileName, string header, LinkList<Operation> list)
         {
             if (!File.Exists(fileName)) File.Create(fileName).Close();
 
+            list.Begin();
 
-            using (var writer = new StreamWriter(fileName, true)) // True means Append text to file
+            if (list.Exist())
             {
-                list.Begin();
-                if (list.Exist())
-                {   
-
-                    T temp = list.Get();
-
-                    if (temp is Player)
-                    {
-                        writer.WriteLine(new string('-', 152));
-                        writer.WriteLine(string.Format("| {0,-30} | {1,-25} | {2,15} | {3,-10} | {4,-20} | {5,15} | {6,15} |", "Komanda", "Zaidejas", "Gimimo Metai", "Ugis", "Pozicija", "Suzaista", "Imesti Taskai"));
-                        writer.WriteLine(new string('-', 152));
-                    }
-                    else if (temp is Team)
-                    {
-                        writer.WriteLine(new string('-', 80));
-                        writer.WriteLine(string.Format("| {0,-30} | {1,-25} | {2,15} |", "Komanda", "Suzaista", "Laimeta"));
-                        writer.WriteLine(new string('-', 80));
-                    }
+                using (var writer = new StreamWriter(fileName, true)) // True means Append text to file
+                {
+                    writer.AutoFlush = true;
+                    writer.WriteLine(new string('-', 73));
+                    writer.WriteLine(string.Format("| {0,-69} |", header));
+                    writer.WriteLine(new string('-', 73));
+                    writer.WriteLine(string.Format("| {0,5} | {1,-30} | {2,-10} | {3, 6} | {4, 6} |", "Diena", "Vardas Pavarde", "Kodas", "Kiekis", "Kaina"));
+                    writer.WriteLine(new string('-', 73));
 
                     for (list.Begin(); list.Exist(); list.Next())
                     {
-                        temp = list.Get();
+                        Operation operation = list.Get();
 
-                        writer.WriteLine(temp.ToString());
-
+                        writer.WriteLine(string.Format("| {0,5} | {1,-30} | {2,-10} | {3, 6} | {4, 6} |", operation.Day, operation.FullName, operation.Code, operation.Amount, operation.Cost));
                     }
 
-                    if (temp is Player)
-                    {
-                        writer.WriteLine(new string('-', 152));
-                    }
-                    else if (temp is Team)
-                    {
-                        writer.WriteLine(new string('-', 80));
-                    }
-                    writer.WriteLine("");
+                    writer.WriteLine(new string('-', 73));
+                    writer.Dispose();
+                    writer.Close();
                 }
             }
         }
@@ -826,78 +325,44 @@ namespace K2Basketball
     public static class Task
     {
         /// <summary>
-        /// The method finds the largest count of victories in the given list.
+        /// Finds the smallest quantity value in the list.
         /// THE STUDENT SHOULD IMPLEMENT THIS METHOD ACCORDING THE TASK.
         /// </summary>
-        /// <param name="list">The data list to be searched.</param>
-        /// <returns>The highest number of victories.</returns>
-        public static int MaxVictories(LinkList<Team> list)
+        /// <param name="list">The data for the calculation.</param>
+        /// <returns>The smallest quantity value.</returns>
+        public static int MinQuantity(LinkList<Operation> list)
         {
-            int maxVictories = 0;
+            int min = 99999;
 
-            for(list.Begin(); list.Exist(); list.Next())
+            for (list.Begin(); list.Exist(); list.Next())
             {
-                Team team = list.Get();
+                Operation temp = list.Get();
 
-                if (team.GamesWon > maxVictories) maxVictories = team.GamesWon;
-            }
-
-            return maxVictories;
-        }
-
-        /// <summary>
-        /// Filters data from the source list that meets filtering criterion and writes them
-        /// into the new list.
-        /// THE STUDENT SHOULD IMPLEMENT THIS GENERIC METHOD ACCORDING THE TASK.
-        /// THE STUDENT SHOULDN'T CHANGE THE SIGNATURE OF THE METHOD!
-        /// </summary>
-        /// <typeparam name="TData">The type of the data objects stored in the list</typeparam>
-        /// <typeparam name="TCriterion">The type of criteria</typeparam>
-        /// <param name="source">The source list from which the result would be created</param>
-        /// <param name="criterion">Criterion that the object from source list should meet in 
-        /// order to fall in result list</param>
-        /// <returns>The list that contains filtered data</returns>
-        public static LinkList<TData> Filter<TData, TCriterion>(LinkList<TData> source, TCriterion criterion) where TData : IComparable<TData>, IEquatable<TCriterion>
-        {
-            LinkList<TData> list = new LinkList<TData>();
-
-            for (source.Begin(); source.Exist(); source.Next())
-            {
-                TData temp = source.Get();
-
-                if(temp is Player)
+                if (temp.Amount < min)
                 {
-                    Player player = (Player)(object)temp;
-
-
-                    if(criterion is string)
-                    {
-                        string criteria = (string)(object)criterion.ToString().Trim();
-
-                        if (player.Equals(criteria))
-                        {
-
-                            list.Add(temp);
-                        }
-                    }
-
-                    if (criterion is int)
-                    {
-                        int criteria = (int)(object)criterion;
-
-                        if (player.Equals(criteria))
-                        {
-                            list.Add(temp);
-                        }
-                    }
-
+                    min = temp.Amount;
                 }
             }
 
-            return list;
+            return min;
+        }
+
+        /// <summary>
+        /// Removes objects, those certain property value is less than or equal to 
+        /// <paramref name="value"/>, from the list. 
+        /// THE STUDENT SHOULD IMPLEMENT THIS METHOD ACCORDING THE TASK.
+        /// THE STUDENT SHOULDN'T CHANGE THE SIGNATURE OF THE METHOD!
+        /// </summary>
+        /// <typeparam name="TData">The type of the data objects stored in the list</typeparam>
+        /// <typeparam name="TCriterion">The type of the criterion</typeparam>
+        /// <param name="source">The list to be modified</param>
+        /// <param name="value">The upper bound of the property value for objects to be removed
+        /// form the list. </param>
+        public static void Remove<TData, TCriterion>(LinkList<TData> source, TCriterion value) where TData : IComparable<TData>, IBeneath<TCriterion>
+        {
+            throw new NotImplementedException();
         }
     }
-
     class Program
     {
         /// <summary>
@@ -905,77 +370,29 @@ namespace K2Basketball
         /// </summary>
         static void Main()
         {
-            //
-            // Define File Paths
-            //
-            const string PlayerDataFile = "Zaidejai.txt";
-            const string TeamDataFile = "Komandos.txt";
-            const string Results = "Rezultatai.txt";
+            const string BalFile = "Balandis.txt";
+            const string KovFile = "Kovas.txt";
+            const string CRF = "Rezultatai.txt";
 
-            //
-            // Accept Input
-            //
-            Console.WriteLine("Enter First Position to filter by: ");
-            string firstPosition = Console.ReadLine();
-            Console.WriteLine("Enter Second Position to filter by: ");
-            string secondPosition = Console.ReadLine();
+            if (File.Exists(CRF))
+            {
+                File.Delete(CRF);
+            }
 
-            //
-            // Delete Result File if it exists
-            //
-            if (File.Exists(Results)) File.Delete(Results);
+            LinkList<Operation> BalOperations = InOut.ReadFromFile(BalFile);
+            LinkList<Operation> KovOperations = InOut.ReadFromFile(KovFile);
 
-            //
-            // Player Initial Data (I)
-            //
-            LinkList<Player> players = InOut.ReadFromFile<Player>(PlayerDataFile);
-
-            //
-            // Team Initial Data (II)
-            //
-            LinkList<Team> teams = InOut.ReadFromFile<Team>(TeamDataFile);
-
-            // Find Max Team Victories
-            int maxWins = Task.MaxVictories(teams);
-
-            //
-            // Filtered by First Position (III)
-            //
-            LinkList<Player> filteredByFirstPosition = Task.Filter<Player, string>(players, firstPosition);
-            // Sorting
-            //filteredByFirstPosition.Sort();
-
-            //
-            // Filtered by Second Position (IV)
-            //
-            LinkList<Player> filteredBySecondPosition = Task.Filter<Player, string>(players, secondPosition);
-            // Sorting
-            //filteredBySecondPosition.Sort();
-
-            //
-            // Players that played same amount games as there max victories (V)
-            //
-            LinkList<Player> filteredByMaxVictory = Task.Filter<Player, int>(players, maxWins);
+            InOut.PrintToFile(CRF, "Balandzio duom", BalOperations);
+            InOut.PrintToFile(CRF, "Kovo duom", KovOperations);
 
 
-            //
-            // Printing to Rezultatai.CSV
-            //
+            BalOperations.Sort();
+            KovOperations.Sort();
 
-            // Print Player Initial Data to Rezultatai.CSV
-            InOut.PrintToFile<Player>(Results, players);
+            InOut.PrintToFile(CRF, "Rikiuoti Balandzio duom", BalOperations);
+            InOut.PrintToFile(CRF, "Rikiuoti Kovo duom", KovOperations);
 
-            // Print Team Initial Data to Rezultatai.CSV
-            InOut.PrintToFile<Team>(Results, teams);
-
-            // Print Filtered Players by First position to Rezultatai.CSV
-            InOut.PrintToFile<Player>(Results, filteredByFirstPosition);
-
-            // Print Filtered Players by Second position to Rezultatai.CSV
-            InOut.PrintToFile<Player>(Results, filteredBySecondPosition);
-
-            // Print Players that played same amount games as there max victories to Rezultatai.CSV
-            InOut.PrintToFile<Player>(Results, filteredByMaxVictory);
         }
     }
 }
+
